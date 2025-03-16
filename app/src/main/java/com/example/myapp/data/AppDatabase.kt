@@ -5,20 +5,19 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [DataSchema::class], version = 3)
-abstract class AppDatabase : RoomDatabase() {
+@Database(entities = [PostsSchema::class], version = 2)
+abstract class AppDatabase: RoomDatabase() {
     abstract fun databaseDao(): DatabaseDao
 
     companion object {
-        @Volatile
         private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "Database"
+                    context = context.applicationContext,
+                    klass = AppDatabase::class.java,
+                    name = "Database"
                 ).build()
                 INSTANCE = instance
                 instance

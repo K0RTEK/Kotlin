@@ -1,15 +1,15 @@
 package com.example.myapp.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface DatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertData(dataSchema: List<DataSchema>)
+    suspend fun insertData(data: List<PostsSchema>)
 
-    @Query("SELECT * FROM TodoTable")
-    suspend fun getAllData(): List<DataSchema>
-
-    @Query("SELECT * FROM TodoTable WHERE id = :id")
-    suspend fun getDataById(id: Int): DataSchema?
+    @Query("SELECT * FROM posts")
+    suspend fun selectData(): List<PostsSchema>
 }

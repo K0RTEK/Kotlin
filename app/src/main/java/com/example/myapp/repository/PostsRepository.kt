@@ -1,38 +1,38 @@
 package com.example.myapp.repository
 
 import com.example.myapp.data.AppDatabase
-import com.example.myapp.data.DataSchema
+import com.example.myapp.data.PostsSchema
 import com.example.myapp.network.ApiInterface
 import com.example.myapp.network.RetrofitService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 
-class TodoRepository(private val db: AppDatabase) {
+class PostsRepository(private val db: AppDatabase) {
     private val api = RetrofitService.retrofit.create(ApiInterface::class.java)
 
-    suspend fun fetchData(): List<DataSchema> {
+    suspend fun fetchApi(): List<PostsSchema> {
         return try {
             val response = api.getApiAnswer().awaitResponse()
             if (response.isSuccessful) {
                 response.body()?.also { saveData(it) } ?: emptyList()
             } else {
-                getDataFromDatabase()
+                getData()
             }
         } catch (e: Exception) {
-            getDataFromDatabase()
+            getData()
         }
     }
 
-    private suspend fun saveData(data: List<DataSchema>) {
+    private suspend fun saveData(data: List<PostsSchema>) {
         withContext(Dispatchers.IO) {
             db.databaseDao().insertData(data)
         }
     }
 
-    private suspend fun getDataFromDatabase(): List<DataSchema> {
+    private suspend fun getData(): List<PostsSchema> {
         return withContext(Dispatchers.IO) {
-            db.databaseDao().getAllData()
+            db.databaseDao().selectData()
         }
     }
 }
